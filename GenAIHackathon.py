@@ -20,18 +20,38 @@ page_dict = {
     "Explore your Career Options": explore_career_options_page,
 }
 
-# Create a sidebar with image buttons for navigation using HTML
+# Add custom CSS to style the image buttons
+st.markdown(
+    """
+    <style>
+    .img-button {
+        background-image: url('cv_image.png');
+        background-size: cover;
+        width: 200px;
+        height: 200px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        padding: 0;
+    }
+    .img-button:hover {
+        opacity: 0.7;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Create a sidebar with image buttons for navigation
 st.sidebar.title("Select a Page")
 
-# Use HTML to create buttons with images
-cv_image = open("cv_image.png", "rb").read()
-if st.sidebar.button(f"<img src='data:image/png;base64,{cv_image}'/>", key="cv_button"):
-    page_dict["Build your CV"]()
+if st.button("", key="cv_button", on_click=build_cv_page, output_format="image"):
+    pass
 
-cover_letter_image = open("cover_letter_image.png", "rb").read()
-if st.sidebar.button(f"<img src='data:image/png;base64,{cover_letter_image}'/>", key="cover_letter_button"):
-    page_dict["Build a Cover Letter and Prepare for Interviews"]()
+if st.button("", key="cover_letter_button", on_click=build_cover_letter_and_interview_page, output_format="image"):
+    pass
 
-career_options_image = open("career_options_image.png", "rb").read()
-if st.sidebar.button(f"<img src='data:image/png;base64,{career_options_image}'/>", key="career_options_button"):
-    page_dict["Explore your Career Options"]()
+if st.button("", key="career_options_button", on_click=explore_career_options_page, output_format="image"):
+    pass
