@@ -31,8 +31,9 @@ page_dict = {
 st.title("Welcome to the Landing Page")
 st.markdown("---")
 
-# Center-align the images
-col1, col2, col3 = st.beta_columns(3)
+# Use st.columns to center-align the images/buttons
+col1, col2, col3 = st.columns(3)
+
 with col1:
     if st.button("Build your CV"):
         page_dict["Build your CV"]()
