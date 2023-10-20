@@ -20,22 +20,17 @@ page_dict = {
     "Explore your Career Options": explore_career_options_page,
 }
 
-# Create a title and center it
-st.title("Welcome! Please choose from the options below:")
-st.markdown("---")
+# Create a sidebar with image buttons for navigation
+with st.sidebar:
+    st.header("Navigation")
+    cv_button = st.button("Build your CV", key="cv_button")
+    cover_letter_button = st.button("Build a Cover Letter and Prepare for Interviews", key="cover_letter_button")
+    career_options_button = st.button("Explore your Career Options", key="career_options_button")
 
-# Use st.columns to center-align the images as buttons
-col1, col2, col3 = st.columns(3)
-
-# Add images as buttons for navigation
-with col1:
-    if st.image("cv_image.png"):
-        page_dict["Build your CV"]()
-
-with col2:
-    if st.image("cover_letter_image.png"):
-        page_dict["Build a Cover Letter and Prepare for Interviews"]()
-
-with col3:
-    if st.image("career_options_image.png"):
-        page_dict["Explore your Career Options"]()
+# Get the user's choice based on which button they click
+if cv_button:
+    page_dict["Build your CV"]()
+elif cover_letter_button:
+    page_dict["Build a Cover Letter and Prepare for Interviews"]()
+elif career_options_button:
+    page_dict["Explore your Career Options"]()
