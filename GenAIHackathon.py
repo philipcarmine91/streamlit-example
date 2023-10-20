@@ -27,13 +27,20 @@ page_dict = {
     "Explore your Career Options": explore_career_options_page,
 }
 
-# Create a sidebar with buttons using images for navigation
-st.sidebar.image("cv_image.png", use_column_width=True)
-st.sidebar.image("cover_letter_image.png", use_column_width=True)
-st.sidebar.image("career_options_image.png", use_column_width=True)
+# Create a title and center it
+st.title("Welcome to the Landing Page")
+st.markdown("---")
 
-# Get the user's choice from the sidebar
-selected_page = st.sidebar.selectbox("Select a Page", list(page_dict.keys()))
+# Center-align the images
+col1, col2, col3 = st.beta_columns(3)
+with col1:
+    if st.button("Build your CV"):
+        page_dict["Build your CV"]()
 
-# Call the corresponding function based on the user's choice
-page_dict[selected_page]()
+with col2:
+    if st.button("Build a Cover Letter and Prepare for Interviews"):
+        page_dict["Build a Cover Letter and Prepare for Interviews"]()
+
+with col3:
+    if st.button("Explore your Career Options"):
+        page_dict["Explore your Career Options"]()
