@@ -1,12 +1,5 @@
 import streamlit as st
 
-"""
-# Hello!
-
-Please choose from the following three options:
-
-"""
-
 # Define the function for each page
 def build_cv_page():
     st.header("Build your CV")
@@ -28,20 +21,21 @@ page_dict = {
 }
 
 # Create a title and center it
-st.title("Welcome to the Landing Page")
+st.title("Welcome! Please choose from the options below:")
 st.markdown("---")
 
-# Use st.columns to center-align the images/buttons
+# Use st.columns to center-align the images as buttons
 col1, col2, col3 = st.columns(3)
 
+# Add images as buttons for navigation
 with col1:
-    if st.button("Build your CV"):
+    if st.image("cv_image.png"):
         page_dict["Build your CV"]()
 
 with col2:
-    if st.button("Build a Cover Letter and Prepare for Interviews"):
+    if st.image("cover_letter_image.png"):
         page_dict["Build a Cover Letter and Prepare for Interviews"]()
 
 with col3:
-    if st.button("Explore your Career Options"):
+    if st.image("career_options_image.png"):
         page_dict["Explore your Career Options"]()
