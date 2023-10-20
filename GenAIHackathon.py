@@ -23,14 +23,16 @@ page_dict = {
 # Create a sidebar with image buttons for navigation
 with st.sidebar:
     st.header("Navigation")
-    cv_button = st.button("Build your CV", key="cv_button")
-    cover_letter_button = st.button("Build a Cover Letter and Prepare for Interviews", key="cover_letter_button")
-    career_options_button = st.button("Explore your Career Options", key="career_options_button")
 
-# Get the user's choice based on which button they click
-if cv_button:
-    page_dict["Build your CV"]()
-elif cover_letter_button:
-    page_dict["Build a Cover Letter and Prepare for Interviews"]()
-elif career_options_button:
-    page_dict["Explore your Career Options"]()
+    # Use st.image inside the button to show images as buttons
+    if st.button("Build your CV", key="cv_button"):
+        page_dict["Build your CV"]()
+    st.image("cv_image.png", use_column_width=True)
+
+    if st.button("Build a Cover Letter and Prepare for Interviews", key="cover_letter_button"):
+        page_dict["Build a Cover Letter and Prepare for Interviews"]()
+    st.image("cover_letter_image.png", use_column_width=True)
+
+    if st.button("Explore your Career Options", key="career_options_button"):
+        page_dict["Explore your Career Options"]()
+    st.image("career_options_image.png", use_column_width=True)
