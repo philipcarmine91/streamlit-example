@@ -47,11 +47,11 @@ st.markdown(
 # Create a sidebar with image buttons for navigation
 st.sidebar.title("Select a Page")
 
-if st.button("", key="cv_button", on_click=build_cv_page, output_format="image"):
-    pass
+if st.button("", key="cv_button", on_click=build_cv_page):
+    st.markdown('<button class="img-button"></button>', unsafe_allow_html=True)
 
-if st.button("", key="cover_letter_button", on_click=build_cover_letter_and_interview_page, output_format="image"):
-    pass
+if st.button("", key="cover_letter_button", on_click=build_cover_letter_and_interview_page):
+    st.markdown('<button class="img-button"></button>', unsafe_allow_html=True)
 
-if st.button("", key="career_options_button", on_click=explore_career_options_page, output_format="image"):
-    pass
+if st.button("", key="career_options_button", on_click=explore_career_options_page):
+    st.markdown('<button class="img-button"></button>', unsafe_allow_html=True)
