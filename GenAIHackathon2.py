@@ -1,74 +1,71 @@
 import streamlit as st
 import pyaudio
 import wave
-import threading
 import speech_recognition as sr
+import tempfile
+import os
+from pydub import AudioSegment
+from pydub.playback import play
 
-# Function to start and stop recording
-def record_audio(filename, frames, p):
-    CHUNK = 1024
-    FORMAT = pyaudio.paInt16
-    CHANNELS = 2
-    RATE = 44100
-    audio = pyaudio.PyAudio()
+# Initialize the recognizer
+recognizer = sr.Recognizer()
+audio_stream = None
 
-    stream = audio.open(format=FORMAT, channels=CHANNELS,
-                        rate=RATE, input=True,
-                        frames_per_buffer=CHUNK)
-
+# Function to start recording
+def start_recording():
+    global audio_stream
+    audio_stream = pyaudio.PyAudio().open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=1024)
     st.text("Recording...")
 
-    while recording:
-        data = stream.read(CHUNK)
-        frames.append(data)
+# Function to stop recording and generate transcript
+def stop_recording():
+    global audio_stream
+    if audio_stream is not None:
+        st.text("Recording stopped.")
+        audio_stream.stop_stream()
+        audio_stream.close()
 
-    st.text("Recording stopped.")
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_audio:
+            temp_audio_filename = temp_audio.name
+            temp_audio.close()
+            audio_file = wave.open(temp_audio_filename, 'wb')
+            audio_file.setnchannels(1)
+            audio_file.setsampwidth(pyaudio.PyAudio().get_sample_size(pyaudio.paInt16))
+            audio_file.setframerate(16000)
 
-    stream.stop_stream()
-    stream.close()
-    audio.terminate()
+            audio_data = []
+            while True:
+                chunk = audio_stream.read(1024)
+                if not chunk:
+                    break
+                audio_file.writeframes(chunk)
+                audio_data.append(chunk)
 
-    with wave.open(filename, 'wb') as wf:
-        wf.setnchannels(CHANNELS)
-        wf.setsampwidth(audio.get_sample_size(FORMAT))
-        wf.setframerate(RATE)
-        wf.writeframes(b''.join(frames))
+            audio_file.close()
 
-# Initialize Streamlit
-st.title("Build your CV")
+        audio_file = sr.AudioFile(temp_audio_filename)
+        with audio_file as source:
+            audio_data = recognizer.record(source)
+            try:
+                text = recognizer.recognize_google(audio_data)
+                st.text("Transcript:")
+                st.write(text)
+            except sr.UnknownValueError:
+                st.text("Google Speech Recognition could not understand the audio.")
+            except sr.RequestError as e:
+                st.text(f"Could not request results from Google Speech Recognition service; {e}")
 
-# Control variable for recording
-recording = False
+        # Play the recorded audio back
+        audio = AudioSegment.from_wav(temp_audio_filename)
+        play(audio)
 
-# Initialize recording frames
-frames = []
+        os.remove(temp_audio_filename)
 
-# Create a button to start and stop recording
-if not recording:
-    if st.button("Start Recording"):
-        recording = True
-        frames = []
-        thread = threading.Thread(target=record_audio, args=("recording.wav", frames, p))
-        thread.start()
-else:
-    if st.button("Stop Recording"):
-        recording = False
+# Streamlit UI
+st.title("Audio Recording and Transcript Generation")
 
-if st.checkbox("Play Recorded Audio"):
-    if frames:
-        audio = b''.join(frames)
-        st.audio(audio, format="audio/wav")
+if st.button("Start Recording"):
+    start_recording()
 
-# Create a button to transcribe the recorded audio
-if st.button("Transcribe Recorded Audio"):
-    audio = b''.join(frames)
-    r = sr.Recognizer()
-    with sr.AudioData(audio, sample_rate=44100) as source:
-        try:
-            transcript = r.recognize_google(source)
-            st.subheader("Transcript:")
-            st.write(transcript)
-        except sr.UnknownValueError:
-            st.write("Could not understand audio")
-        except sr.RequestError as e:
-            st.write(f"Could not request results: {e}")
+if st.button("Stop Recording and Generate Transcript"):
+    stop_recording()
